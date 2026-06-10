@@ -1,0 +1,109 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'  # Triggers when you push a tag like v0.1.0
+
+permissions:
+  contents: write  # Needed to upload release assets
+
+jobs:
+  build:
+    name: Build and Release
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - goos: linux
+            goarch: amd64
+            suffix: ""
+          - goos: linux
+            goarch: arm64
+            suffix: ""
+          - goos: darwin
+            goarch: amd64
+            suffix: ""
+          - goos: darwin
+            goarch: arm64
+            suffix: ""
+          - goos: windows
+            goarch: amd64
+            suffix: ".exe"
+          - goos: windows
+            goarch: arm64
+            suffix: ".exe"
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+
+      - name: Build binary
+        env:
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/}
+          LDFLAGS="-s -w -X main.version=$VERSION"
+          
+          if [ "$GOOS" = "windows" ]; then
+            LDFLAGS="-H windowsgui $LDFLAGS"
+          fi
+          
+          mkdir -p dist
+          OUTPUT="dist/holepunch-${GOOS}-${GOARCH}${{ matrix.suffix }}"
+          go build -ldflags="$LDFLAGS" -o "$OUTPUT" ./cmd/holepunch/
+          
+          # Generate checksums
+          sha256sum "$OUTPUT" >> dist/checksums.txt
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: binaries-${{ matrix.goos }}-${{ matrix.goarch }}
+          path: dist/
+
+  release:
+    name: Create Release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist/
+          pattern: binaries-*
+          merge-multiple: true
+
+      - name: Display structure
+        run: ls -R dist/
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: ${{ github.ref_name }}
+          body: |
+            ## 🚀 HolePunch ${{ github.ref_name }}
+            
+            ### What's New
+            - See [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md) for details.
+            
+            ### Download
+            Choose the binary for your platform:
+            - **Linux (amd64)**: `holepunch-linux-amd64`
+            - **Linux (arm64)**: `holepunch-linux-arm64`
+            - **macOS (Intel)**: `holepunch-darwin-amd64`
+            - **macOS (Apple Silicon)**: `holepunch-darwin-arm64`
+            - **Windows (64-bit)**: `holepunch-windows-amd64.exe`
+            
+            ### Verify
+            Checksums are in `checksums.txt`
+          files: |
+            dist/*
+          draft: false
+          prerelease: false

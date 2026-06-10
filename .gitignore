@@ -1,0 +1,13 @@
+# Binaries
+dist/
+holepunch
+holepunch.exe
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
