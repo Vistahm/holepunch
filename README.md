@@ -2,16 +2,18 @@
 
 **Share files directly between computers — no cloud, no accounts, no limits.**
 
-HolePunch creates an instant, password-protected file server that's accessible
+HolePunch creates an instant, token/password protected file server that's accessible
 from anywhere. It automatically configures your router via UPnP, so you don't
 need to mess with port forwarding.
 
 ## Features
 
 - 🔌 **Automatic NAT traversal** — uses UPnP to open ports on your router
-- 🔐 **Built-in authentication** — token or Basic Auth
+- 🔑 **Built-in authentication** — token or Basic Auth
+- 🔐 TLS encryption - with `--tls` flag, you can enable the encryption so your ISP won't be able to spy the data transit
+- 👁 No surveillance - there's no middleman; only you and the people who have access to your URL will see the files
 - 💻 **Single binary** — no dependencies, no installation
-- 🛡️ **Works offline** — no cloud services needed; survives internet shutdowns
+- 🛡️ **Survives restricted internet** — it will work in countries with restricted internet access
 - 📁 **Simple directory listing** — browse and download files from any browser
 
 ## Installation
@@ -52,20 +54,19 @@ Token: a1b2c3d4e5f6a7b8
 
 ## Use Cases
 
-- Share any file you want with family or friends
+- Share any file you want with whoever you want
 - Give a known one access to files without uploading them anywhere
 - Create a temporary file drop during a LAN party
 - Access your files remotely, even when cloud services are blocked
 
-
-## Disclaimer
+## ⚠️ Disclaimer
 
 HolePunch is provided "as is", without warranty of any kind. Use at your own risk.
 
 - This tool opens a port on your router. Anyone with the access URL can reach your files.
-- Authentication protects access, but data travels unencrypted over HTTP.
-- The author isn't not responsible for unauthorized access, data loss, or any damages.
+- The author is not responsible for unauthorized access, data loss, or any damages.
 - Respect copyright laws — only share files you have the right to distribute.
 - UPnP behavior varies by router; not all networks are supported.
-- Do NOT let the app run for a long while; once you're job is done stop the program
-- Do NOT share the URL with strangers or the people that you don't trust
+- Stop the program when you're done sharing — don't leave the port open unnecessarily.
+- Never share the access URL publicly or with people you don't trust.
+- If using `--tls`, keep the generated certificate files (`.crt`, `.key`) private.
