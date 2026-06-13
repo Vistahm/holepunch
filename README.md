@@ -11,7 +11,7 @@ need to mess with port forwarding.
 - 🔌 **Automatic NAT traversal** — uses UPnP to open ports on your router
 - 🔑 **Built-in authentication** — token or Basic Auth
 - 🔐 TLS encryption - with `--tls` flag, you can enable the encryption so your ISP won't be able to spy the data transit
-- 👁 No surveillance - there's no middleman; only you and the people who have access to your URL will see the files
+- 👀 No surveillance - there's no middleman; only you and the people who have access to your URL will see the files
 - 💻 **Single binary** — no dependencies, no installation
 - 🛡️ **Survives restricted internet** — it will work in countries with restricted internet access
 - 📁 **Simple directory listing** — browse and download files from any browser
@@ -33,7 +33,7 @@ Available for x86-64 architecture on Windows and Linux.
 
 On Windows:
 
-`.\holepunch -dir D:\Music`
+`.\holepunch.exe -dir D:\Music`
 
 
 ## Output:
